@@ -3,18 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Quiz;
-class QuizController extends Controller
+use App\Question;
+use App\Answer;
+class QuestionController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+   /* public function __construct() {
+          // $Questions = (new Question);
+    }*/
     public function index()
     {
-        $quizzes = (new Quiz)->allQuiz();
-        return view('backend.quiz.index',compact('quizzes'));
+        $questions = (new Question)->allQuestion();
+        return view('backend.question.index',compact('questions'));
     }
 
     /**
@@ -24,7 +28,7 @@ class QuizController extends Controller
      */
     public function create()
     {
-        return view('backend.quiz.create');
+        return view('backend.question.create');
     }
 
     /**
@@ -36,8 +40,9 @@ class QuizController extends Controller
     public function store(Request $request)
     {
         $data = $this->validateForm($request);
-        $quiz = (new Quiz)->storeQuiz($data);
-        return redirect()->back()->with('message','Quiz created successfully');
+        $question =  (new Question)->storeQuestion($data);
+        $answer =  (new Answer)->storeAnswer($data,$question);
+        return redirect()->back()->with('message','Question Added.');
     }
 
     /**
@@ -48,7 +53,8 @@ class QuizController extends Controller
      */
     public function show($id)
     {
-      //
+        $question = (new Question)->getQuestion($id);
+        return view('backend.question.show',compact('question'));
     }
 
     /**
@@ -59,8 +65,8 @@ class QuizController extends Controller
      */
     public function edit($id)
     {
-        $quiz = (new Quiz)->getQuiz($id);
-        return view('backend.quiz.edit',compact('quiz'));
+        $question = (new Question)->getQuestion($id);
+        return view('backend.question.edit',compact('question'));
     }
 
     /**
@@ -73,8 +79,9 @@ class QuizController extends Controller
     public function update(Request $request, $id)
     {
         $data = $this->validateForm($request);
-        $quiz = (new Quiz)->updateQuiz($data,$id);
-        return redirect(route('quiz.index'))->with('message','Quiz updated successfully');
+        $question = (new Question)->updateQuestion($data,$id);
+        $answer = (new Answer)->updateAnswer($request,$question);
+        return redirect(route('question.index'))->with('message','Question Updated.');
     }
 
     /**
@@ -85,19 +92,18 @@ class QuizController extends Controller
      */
     public function destroy($id)
     {
-        (new Quiz)->deleteQuiz($id);
-        return redirect(route('quiz.index'))->with('message','Quiz deleted successfully');
-    }
-    public function validateForm($request){
-        return $this->validate($request,[
-            'name' => 'required|string',
-            'description' => 'required|min:3|max:500',
-            'minutes' => 'required|integer'
-        ]);
+        $answer = (new Answer)->deleteAnswer($id);
+        $question = (new Question)->deleteQuestion($id);
+        return redirect(route('question.index'))->with('message','Question Deleted.');
     }
 
-    public function question($id){
-        $quizzes = Quiz::with('questions')->where('id',$id)->get();
-        return view('backend.quiz.question',compact('quizzes'));
+    public function validateForm($request){
+       return $this->validate($request,[
+            'question' => 'required|min:5',
+            'quiz_id' => 'required',
+            'options' =>'bail|required|array|min:3',
+            'options.*' =>'bail|required|string|distinct',
+            'correct_answer' => 'required'
+        ]);
     }
 }

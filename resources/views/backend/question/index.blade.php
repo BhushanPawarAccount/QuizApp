@@ -12,39 +12,36 @@
             @endif
             <div class="module">
                 <div class="module-head">
-                    <h3>All Quiz</h3>
+                    <h3>All Questions</h3>
                 </div>
                 <div class="module-body">
                     <table class="table table-striped">
                         <thead>
                           <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Minutes</th>
-                            <th>Action</th>
-                            
+                            <th>Question</th>
+                            <th>Type</th>  
                           </tr>
                         </thead>
                         <tbody>
-                            @if(count($quizzes)>0)
-                                @foreach ($quizzes as $key=>$quiz)
+                            @if(count($questions)>0)
+                                @foreach ($questions as $key=>$question)
                                     <tr>
                                     <td>{{$key+1}}</td>
-                                    <td>{{$quiz->name}}</td>
-                                    <td>{{$quiz->description}}</td>
-                                    <td>{{$quiz->minutes}}</td>
+                                    <td>{{$question->question}}</td>
+                                    <td>{{$question->quiz->name}}</td>
                                     <td>
-                                        <a href="/quiz/{{$quiz->id}}/question" class="btn btn-info">View</a>
-                                        <a href="{{route('quiz.edit',$quiz->id)}}" class="btn btn-success">Edit</a>
-                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{$quiz->id}}">
+                                        <a href="{{route('question.show',$question->id)}}" class="btn btn-info">View</a>
+                                        
+                                        <a href="{{route('question.edit',$question->id)}}" class="btn btn-success">Edit</a>
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{$question->id}}">
                                             Delete
                                           </button>
                                           <!-- Modal -->
-                                            <div class="modal fade" id="exampleModal{{$quiz->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal fade" id="exampleModal{{$question->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                 <div class="modal-content">
-                                                    <form action="{{route('quiz.destroy',[$quiz->id])}}" method="post">@csrf 
+                                                    <form action="{{route('question.destroy',[$question->id])}}" method="post">@csrf 
                                                         {{method_field('DELETE')}}
                                                     <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalLabel">Confirm</h5>
@@ -53,7 +50,7 @@
                                                     </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                    Are you sure you want to delete this quiz?
+                                                    Are you sure you want to delete this question?
                                                     </div>
                                                     <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
@@ -68,12 +65,14 @@
                                     </tr>
                                 @endforeach
                             @else
-                             <td>No Quiz Found!</td>
+                             <td>No Question Found!</td>
                             @endif
                    
                         </tbody>
                     </table>
-                   
+                    <div class="pagination pagination-right">
+                        {{$questions->links()}}
+                    </div>
                       
                 </div>
             </div>
