@@ -38,6 +38,8 @@
                                 <li><a href="{{route('exam.create')}}"><i class="icon-inbox"></i>Create Exam </a></li>
                             </ul>
                         </li>
+                        <li class="active"><a href="{{url('/results')}}"><i class="menu-icon icon-eye-open"></i>View Result</a></li>
+                       
                         
                      </ul>
                      <ul class="widget widget-menu unstyled">

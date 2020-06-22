@@ -42,4 +42,9 @@ Route::group(['middleware'=>'isAdmin'],function(){
     Route::POST('exam/store','ExamController@store')->name('exam.store');
     Route::get('exam/user','ExamController@userExam')->name('view.exam');
     Route::POST('exam/remove','ExamController@removeExam')->name('exam.remove');
+
+    //Results section
+    Route::get('results','ExamController@result');
+    Route::get('results/{userID}/{quizId}','ExamController@userQuizResult');
+
 });
